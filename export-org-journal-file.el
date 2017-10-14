@@ -1,11 +1,18 @@
 (require 'org)
 (require 'seq)
 
+(defun get-time(org-element)
+  (let ((time (org-element-property :TIME org-element)))
+    (if (not time)
+        (setq time "00:00"))
+    time))
+
 (defun summarize()
   (let* ((element (org-element-at-point)))
     (let (properties)
            (setq properties (plist-put properties :level (org-element-property :level element)))
            (setq properties (plist-put properties :title (org-element-property :title element)))
+           (setq properties (plist-put properties :time (get-time element)))
            (setq properties (plist-put properties :content
                                        (buffer-substring-no-properties
                                         (org-element-property :contents-begin element)
