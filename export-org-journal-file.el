@@ -35,19 +35,59 @@
 (seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
             (org-map-entries 'summarize nil (list "/home/pieter/repos/local/export-org-journal/20170816.org")))
 
+(defun extract-date(filepath)
+  (let* ((file-name (file-name-base filepath)))
+    (concat (substring file-name 0 4) "-"
+            (substring file-name 4 6) "-"
+            (substring file-name 6 8))
+    )
+  )
+
+(ert-deftest extract-date-from-filename()
+  (should (equal (extract-date "20170816.org") "2017-08-16"))
+  )
+
+(ert-deftest extract-date-from-filepath()
+  (should (equal (extract-date  "/home/pieter/repos/local/export-org-journal/20170816.org") "2017-08-16"))
+  )
+
 (defun extract-journal-properties(filepath)
   (let* ((date (file-name-base filepath)))
-    (seq-map (lambda (elt) (plist-put elt :date date))
+    (seq-map (lambda (elt) (plist-put elt :date (extract-date date)))
              (seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
                          (org-map-entries 'summarize nil (list filepath))))
     )
   )
 
+(defun export-meta-info(journal-properties)
+  (let* ((file-path (build-filename (plist-get journal-properties :date) (plist-get journal-properties :title) ".meta"))
+         (slug (file-name-base file-path)))
+    (set-buffer (find-file-noselect file-path))
+    (erase-buffer)
+    (insert-string (concat ".. title: " (plist-get journal-properties :title)))
+    (newline)
+    (insert-string (concat ".. slug: " slug))
+    (newline)
+    (insert-string (concat ".. date: "
+                           (plist-get journal-properties :date) " "
+                           (plist-get journal-properties :time) " CET"))
+    (save-buffer))
+  )
+
+(defun export-blog-content(journal-properties)
+  (let ((file-path (build-filename (plist-get journal-properties :date) (plist-get journal-properties :title) ".org")))
+    (set-buffer (find-file-noselect file-path))
+    (erase-buffer)
+    (insert-string (concat "* " (plist-get journal-properties :title)))
+    (newline)
+    (insert-string (plist-get journal-properties :content))
+    (save-buffer))
+  )
+
 (defun export-org-journals(filepath)
   (let ((journal-properties (extract-journal-properties filepath)))
-    (mapc (lambda (elt)
-            (find-file-noselect (build-filename (plist-get elt :date) (plist-get elt :title) ".org")))
-          journal-properties)
+    (mapc 'export-meta-info journal-properties)
+    (mapc 'export-blog-content journal-properties)
     nil)
   )
 
