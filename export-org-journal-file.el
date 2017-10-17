@@ -34,3 +34,21 @@
 
 (seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
             (org-map-entries 'summarize nil (list "/home/pieter/repos/local/export-org-journal/20170816.org")))
+
+(defun extract-journal-properties(filepath)
+  (let* ((date (file-name-base filepath)))
+    (seq-map (lambda (elt) (plist-put elt :date date))
+             (seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
+                         (org-map-entries 'summarize nil (list filepath))))
+    )
+  )
+
+(defun export-org-journals(filepath)
+  (let ((journal-properties (extract-journal-properties filepath)))
+    (mapc (lambda (elt)
+            (find-file-noselect (build-filename (plist-get elt :date) (plist-get elt :title) ".org")))
+          journal-properties)
+    nil)
+  )
+
+(export-org-journals  "/home/pieter/repos/local/export-org-journal/20170816.org")
