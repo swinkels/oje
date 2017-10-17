@@ -23,44 +23,44 @@
          (seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
                      (org-map-entries 'summarize nil (list "/home/pieter/repos/local/export-org-journal/20170816.org"))))
 
-(defun build-filename (date title extension)
+(defun build-file-name (date title extension)
   (concat date "-" (replace-regexp-in-string " " "-" (downcase title)) extension)
   )
 
-(build-filename "20170816" "Letting CapsLock be Control and Escape" ".org")
-(build-filename "20170816" "Letting CapsLock be Control and Escape" ".meta")
+(build-file-name "20170816" "Letting CapsLock be Control and Escape" ".org")
+(build-file-name "20170816" "Letting CapsLock be Control and Escape" ".meta")
 
 (org-map-entries 'org-element-at-point nil (list "/home/pieter/repos/local/export-org-journal/20170816.org"))
 
 (seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
             (org-map-entries 'summarize nil (list "/home/pieter/repos/local/export-org-journal/20170816.org")))
 
-(defun extract-date(filepath)
-  (let* ((file-name (file-name-base filepath)))
+(defun extract-date(file-path)
+  (let* ((file-name (file-name-base file-path)))
     (concat (substring file-name 0 4) "-"
             (substring file-name 4 6) "-"
             (substring file-name 6 8))
     )
   )
 
-(ert-deftest extract-date-from-filename()
+(ert-deftest extract-date-from-file-name()
   (should (equal (extract-date "20170816.org") "2017-08-16"))
   )
 
-(ert-deftest extract-date-from-filepath()
+(ert-deftest extract-date-from-file-path()
   (should (equal (extract-date  "/home/pieter/repos/local/export-org-journal/20170816.org") "2017-08-16"))
   )
 
-(defun extract-journal-properties(filepath)
-  (let* ((date (file-name-base filepath)))
+(defun extract-journal-entries(path-to-journal)
+  (let ((date (file-name-base path-to-journal)))
     (seq-map (lambda (elt) (plist-put elt :date (extract-date date)))
              (seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
-                         (org-map-entries 'summarize nil (list filepath))))
+                         (org-map-entries 'summarize nil (list path-to-journal))))
     )
   )
 
 (defun export-meta-info(journal-properties)
-  (let* ((file-path (build-filename (plist-get journal-properties :date) (plist-get journal-properties :title) ".meta"))
+  (let* ((file-path (build-file-name (plist-get journal-properties :date) (plist-get journal-properties :title) ".meta"))
          (slug (file-name-base file-path)))
     (set-buffer (find-file-noselect file-path))
     (erase-buffer)
@@ -75,7 +75,7 @@
   )
 
 (defun export-blog-content(journal-properties)
-  (let ((file-path (build-filename (plist-get journal-properties :date) (plist-get journal-properties :title) ".org")))
+  (let ((file-path (build-file-name (plist-get journal-properties :date) (plist-get journal-properties :title) ".org")))
     (set-buffer (find-file-noselect file-path))
     (erase-buffer)
     (insert-string (concat "* " (plist-get journal-properties :title)))
@@ -84,10 +84,10 @@
     (save-buffer))
   )
 
-(defun export-org-journals(filepath)
-  (let ((journal-properties (extract-journal-properties filepath)))
-    (mapc 'export-meta-info journal-properties)
-    (mapc 'export-blog-content journal-properties)
+(defun export-org-journals(path-to-journal)
+  (let ((journal-entries (extract-journal-entries path-to-journal)))
+    (mapc 'export-meta-info journal-entries)
+    (mapc 'export-blog-content journal-entries)
     nil)
   )
 
