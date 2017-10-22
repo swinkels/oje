@@ -1,3 +1,7 @@
+;;; export-org-journal-file.el --- Support export of org-journal files to Nikola
+
+;; Version: 0.0.0
+
 (require 'org)
 (require 'seq)
 
@@ -19,21 +23,9 @@
                                         (org-element-property :contents-end element))))
            )))
 
-(seq-map (lambda (elt) (print (plist-get elt :title)))
-         (seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
-                     (org-map-entries 'summarize nil (list "/home/pieter/repos/local/export-org-journal/20170816.org"))))
-
 (defun build-file-name (date title extension)
   (concat date "-" (replace-regexp-in-string " " "-" (downcase title)) extension)
   )
-
-(build-file-name "20170816" "Letting CapsLock be Control and Escape" ".org")
-(build-file-name "20170816" "Letting CapsLock be Control and Escape" ".meta")
-
-(org-map-entries 'org-element-at-point nil (list "/home/pieter/repos/local/export-org-journal/20170816.org"))
-
-(seq-filter (lambda (elt) (eq 2 (plist-get elt :level)))
-            (org-map-entries 'summarize nil (list "/home/pieter/repos/local/export-org-journal/20170816.org")))
 
 (defun extract-date(file-path)
   (let* ((file-name (file-name-base file-path)))
@@ -41,14 +33,6 @@
             (substring file-name 4 6) "-"
             (substring file-name 6 8))
     )
-  )
-
-(ert-deftest extract-date-from-file-name()
-  (should (equal (extract-date "20170816.org") "2017-08-16"))
-  )
-
-(ert-deftest extract-date-from-file-path()
-  (should (equal (extract-date  "/home/pieter/repos/local/export-org-journal/20170816.org") "2017-08-16"))
   )
 
 (defun extract-journal-entries(path-to-journal)
@@ -84,11 +68,13 @@
     (save-buffer))
   )
 
-(defun export-org-journals(path-to-journal)
-  (let ((journal-entries (extract-journal-entries path-to-journal)))
+(defun export-journal-entries(journal-file-path)
+  (let ((journal-entries (extract-journal-entries journal-file-path)))
     (mapc 'export-meta-info journal-entries)
     (mapc 'export-blog-content journal-entries)
     nil)
   )
 
-(export-org-journals  "/home/pieter/repos/local/export-org-journal/20170816.org")
+(provide 'export-org-journal-file)
+
+;;; export-org-journal-file.el ends here

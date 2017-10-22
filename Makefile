@@ -1,2 +1,5 @@
-all:
-	emacs --batch --no-init-file --load /home/pieter/repos/local/export-org-journal/export-org-journal-file.el
+unit-tests:
+	cask exec ert-runner
+
+dev-install:
+	cask install
