@@ -78,7 +78,7 @@
   )
 
 (defun build-file-name (date title extension)
-  (concat date "-" (replace-regexp-in-string " " "-" (downcase title)) extension)
+  (concat date "-" (replace-regexp-in-string "[^a-z0-9_.~]" "-" (downcase title)) extension)
   )
 
 (defun export-journal-entries(journal-file-path dest-dir)
