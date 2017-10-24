@@ -1,9 +1,12 @@
 ;;; export-org-journal-file.el --- Support export of org-journal files to Nikola
 
 ;; Version: 0.0.0
+;; Package-Requires: (f org seq)
 
 (require 'org)
 (require 'seq)
+
+(require 'f)
 
 (defun get-time(org-element)
   (let ((time (org-element-property :TIME org-element)))
@@ -23,10 +26,6 @@
                                         (org-element-property :contents-end element))))
            )))
 
-(defun build-file-name (date title extension)
-  (concat date "-" (replace-regexp-in-string " " "-" (downcase title)) extension)
-  )
-
 (defun extract-date(file-path)
   (let* ((file-name (file-name-base file-path)))
     (concat (substring file-name 0 4) "-"
@@ -43,8 +42,8 @@
     )
   )
 
-(defun export-meta-info(journal-properties)
-  (let* ((file-path (build-file-name (plist-get journal-properties :date) (plist-get journal-properties :title) ".meta"))
+(defun export-meta-info(journal-properties dest-dir)
+  (let* ((file-path (build-nikola-file-path journal-properties ".meta" dest-dir))
          (slug (file-name-base file-path)))
     (set-buffer (find-file-noselect file-path))
     (erase-buffer)
@@ -58,8 +57,8 @@
     (save-buffer))
   )
 
-(defun export-blog-content(journal-properties)
-  (let ((file-path (build-file-name (plist-get journal-properties :date) (plist-get journal-properties :title) ".org")))
+(defun export-blog-content(journal-properties dest-dir)
+  (let ((file-path (build-nikola-file-path journal-properties ".org" dest-dir)))
     (set-buffer (find-file-noselect file-path))
     (erase-buffer)
     (insert-string (concat "* " (plist-get journal-properties :title)))
@@ -68,10 +67,18 @@
     (save-buffer))
   )
 
-(defun export-journal-entries(journal-file-path)
+(defun build-nikola-file-path(journal-properties extension dest-dir)
+  (f-short (f-join dest-dir (build-file-name (plist-get journal-properties :date) (plist-get journal-properties :title) extension)))
+  )
+
+(defun build-file-name (date title extension)
+  (concat date "-" (replace-regexp-in-string " " "-" (downcase title)) extension)
+  )
+
+(defun export-journal-entries(journal-file-path dest-dir)
   (let ((journal-entries (extract-journal-entries journal-file-path)))
-    (mapc 'export-meta-info journal-entries)
-    (mapc 'export-blog-content journal-entries)
+    (mapc (lambda (entry) (export-meta-info entry dest-dir)) journal-entries)
+    (mapc (lambda (entry) (export-blog-content entry dest-dir)) journal-entries)
     nil)
   )
 
