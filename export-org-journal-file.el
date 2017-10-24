@@ -18,6 +18,7 @@
   (let* ((element (org-element-at-point)))
     (let (properties)
            (setq properties (plist-put properties :level (org-element-property :level element)))
+           (setq properties (plist-put properties :tags (org-element-property :tags element)))
            (setq properties (plist-put properties :title (org-element-property :title element)))
            (setq properties (plist-put properties :time (get-time element)))
            (setq properties (plist-put properties :content
@@ -44,7 +45,8 @@
 
 (defun export-meta-info(journal-properties dest-dir)
   (let* ((file-path (build-nikola-file-path journal-properties ".meta" dest-dir))
-         (slug (file-name-base file-path)))
+         (slug (file-name-base file-path))
+         (tags (mapconcat 'identity (plist-get journal-properties :tags) ", ")))
     (set-buffer (find-file-noselect file-path))
     (erase-buffer)
     (insert-string (concat ".. title: " (plist-get journal-properties :title)))
@@ -54,6 +56,10 @@
     (insert-string (concat ".. date: "
                            (plist-get journal-properties :date) " "
                            (plist-get journal-properties :time) " CET"))
+    (newline)
+    (when tags
+      (insert-string (concat ".. tags: " tags))
+      (newline))
     (save-buffer))
   )
 
