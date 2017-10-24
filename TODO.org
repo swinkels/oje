@@ -1,0 +1,9 @@
+- [ ] create README
+- [ ] test drive current functionality with an actual Nikola website
+- [ ] document functions - have a look at the Emacs style guide at https://github.com/bbatsov/emacs-lisp-style-guide
+- [ ] create an installable Emacs package
+- [ ] add proper automated integration tests - use Ecukes?
+
+* Done
+- [X] rename module to "oje", short for "org-journal exporter"
+- [X] create repo on GitHub and push
