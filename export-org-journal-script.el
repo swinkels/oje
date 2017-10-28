@@ -1,10 +1,9 @@
-(load "/home/pieter/repos/local/export-org-journal/export-org-journal-file.el")
+(load "/home/pieter/repos/github.com/oje/export-org-journal-file.el")
 
-;; (require 'f)
+(require 'f)
 
-;; (f-files org-journal-dir (lambda (file) (equal (f-ext file) "org")))
-
-(let ((dest-dir "."))
-  (mapc
-   (lambda (journal-file) (export-journal-entries journal-file dest-dir)) argv)
-  )
+(let ((dest-dir "/home/pieter/repos/github.com/nikola-journal/posts")
+      (journal-files
+       (f-files org-journal-dir (lambda (file) (equal (f-ext file) "org")))))
+  (mapc (lambda (journal-file) (export-journal-entries journal-file dest-dir))
+        journal-files))
