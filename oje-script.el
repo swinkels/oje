@@ -1,6 +1,7 @@
 (load "/home/pieter/repos/github.com/oje/export-org-journal-file.el")
 
 (require 'f)
+(require 'oje)
 
 (let ((dest-dir "/home/pieter/repos/github.com/nikola-journal/posts")
       (journal-files

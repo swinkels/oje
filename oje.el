@@ -1,4 +1,4 @@
-;;; export-org-journal-file.el --- Support export of org-journal files to Nikola
+;;; oje.el --- Support export of org-journal files to Nikola
 
 ;; Version: 0.0.0
 ;; Package-Requires: (f org seq)
@@ -88,6 +88,6 @@
     nil)
   )
 
-(provide 'export-org-journal-file)
+(provide 'oje)
 
-;;; export-org-journal-file.el ends here
+;;; oje.el ends here

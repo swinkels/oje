@@ -1,7 +1,7 @@
 (source gnu)
 (source melpa)
 
-(package-file "export-org-journal-file.el")
+(package-file "oje.el")
 
 (files "*.el")
 
