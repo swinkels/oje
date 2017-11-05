@@ -1,4 +1,5 @@
-(load "/home/pieter/repos/github.com/oje/export-org-journal-file.el")
+;; This snippet shows how to use oje to export all org-journal entries in your
+;; org-journal-dir directory. It assumes package oje has been loaded.
 
 (require 'f)
 (require 'oje)
