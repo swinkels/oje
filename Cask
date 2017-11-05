@@ -5,8 +5,5 @@
 
 (files "*.el")
 
-(depends-on "f")
-
 (development
- (depends-on "f")
  (depends-on "ert-runner"))
