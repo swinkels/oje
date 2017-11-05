@@ -1,0 +1,71 @@
+This repo contains the Emacs package "oje" to export an org-mode journal for use
+with [[https://getnikola.com/][Nikola]], the static site generator. Each org-mode journal entry will result
+in a "blog" entry for Nikola. This means that the same day of the org-mode
+journal can yield multiple blog entries.
+
+The package is still under development. Although I can use it and it works for
+me on my main development PC, there is no guarantee that it works for anybody
+else, or even for me when I install it on another PC.
+
+* Requirements
+
+I have developed and tested oje with Emacs 25.3.2 and the packages that come
+with it.
+
+With regard to org-journal, oje assumes the following settings:
+#+BEGIN_SRC Emacs-Lisp
+(setq system-time-locale "en_US.UTF-8")
+(custom-set-variables '(org-journal-file-format "%Y%m%d.org"))
+(setq org-journal-date-format "%F, %A")
+#+END_SRC
+
+With regard to Nikola, oje has been tested with Nikola 7.8.10. You have to
+install the Nikola orgmode plugin:
+#+BEGIN_SRC Shell-script
+nikola plugin -i orgmode
+#+END_SRC
+
+* Installation
+
+There are several ways to install the package. For a minimal installation you
+download the main file [[https://raw.githubusercontent.com/swinkels/oje/master/export-org-journal-file.el][export-org-journal-file.el]] to you local directory and
+load it from your Emacs initialization file:
+#+BEGIN_SRC Emacs-Lisp
+(load "path/to/export-org-journal-file.el")
+#+END_SRC
+
+You can also clone the repo to a local directory, e.g.
+#+BEGIN_SRC Shell-script
+$> git clone https://github.com/swinkels/oje.git
+#+END_SRC
+and load the file from there.
+
+To develop oje I use [[http://cask.readthedocs.io/en/latest/index.html][Cask]] and you can use the ~cask link~ command to link your
+local clone (or download) of oje to Emacs:
+#+BEGIN_SRC Shell-script
+$> cask link oje /path/to/oje
+#+END_SRC
+
+* Usage
+
+The function to export you journal entries is export-journal-entries. It has two
+parameters:
+
+- the path to an org-journal file that contains the journal entries of a single day;
+- the path to the directory to which the journal entries will be exported.
+
+The exported journal entries are ready for consumption by Nikola.
+
+Currently I use the following snippet to export my org-ournal:
+#+BEGIN_SRC Emacs-Lisp
+(require 'f)
+(require 'oje)
+
+(let ((dest-dir "/home/pieter/repos/github.com/nikola-journal/posts")
+      (journal-files
+       (f-files org-journal-dir (lambda (file) (equal (f-ext file) "org")))))
+  (mapc (lambda (journal-file) (export-journal-entries journal-file dest-dir))
+        journal-files))
+#+END_SRC
+
+* Development
