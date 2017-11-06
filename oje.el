@@ -67,8 +67,6 @@
   (let ((file-path (build-nikola-file-path journal-properties ".org" dest-dir)))
     (set-buffer (find-file-noselect file-path))
     (erase-buffer)
-    (insert-string (concat "* " (plist-get journal-properties :title)))
-    (newline)
     (insert-string (plist-get journal-properties :content))
     (save-buffer))
   )
