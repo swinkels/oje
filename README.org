@@ -28,7 +28,7 @@ $> nikola plugin -i orgmode
 * Installation
 
 There are several ways to install the package. For a minimal installation you
-download the main file [[https://raw.githubusercontent.com/swinkels/oje/master/export-org-journal-file.el][oje.el]] to you local directory and load it from your Emacs
+download the main file [[https://raw.githubusercontent.com/swinkels/oje/master/oje.el][oje.el]] to you local directory and load it from your Emacs
 initialization file:
 #+BEGIN_SRC Emacs-Lisp
 (load "path/to/oje.el")
@@ -40,10 +40,11 @@ $> git clone https://github.com/swinkels/oje.git
 #+END_SRC
 and load the file from there.
 
-If you are familiar with Emacs tool [[http://cask.readthedocs.io/en/latest/index.html][Cask]], you can use the ~cask link~ command to
-link your local clone (or download) of oje to Emacs:
+If you are familiar with [[http://cask.readthedocs.io/en/latest/index.html][Cask]], a tool that facilitates the development of Emacs
+packages, you can use its ~cask link~ command to link your local clone (or
+download) of oje to Emacs:
 #+BEGIN_SRC Shell-script
-$> cask link oje /path/to/oje
+$> cask link oje /path/to/oje-dir
 #+END_SRC
 
 * Usage
