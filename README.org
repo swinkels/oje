@@ -22,16 +22,16 @@ With regard to org-journal, oje assumes the following settings:
 With regard to Nikola, oje has been tested with Nikola 7.8.10. You have to
 install the Nikola orgmode plugin:
 #+BEGIN_SRC Shell-script
-nikola plugin -i orgmode
+$> nikola plugin -i orgmode
 #+END_SRC
 
 * Installation
 
 There are several ways to install the package. For a minimal installation you
-download the main file [[https://raw.githubusercontent.com/swinkels/oje/master/export-org-journal-file.el][export-org-journal-file.el]] to you local directory and
-load it from your Emacs initialization file:
+download the main file [[https://raw.githubusercontent.com/swinkels/oje/master/export-org-journal-file.el][oje.el]] to you local directory and load it from your Emacs
+initialization file:
 #+BEGIN_SRC Emacs-Lisp
-(load "path/to/export-org-journal-file.el")
+(load "path/to/oje.el")
 #+END_SRC
 
 You can also clone the repo to a local directory, e.g.
@@ -40,8 +40,8 @@ $> git clone https://github.com/swinkels/oje.git
 #+END_SRC
 and load the file from there.
 
-To develop oje I use [[http://cask.readthedocs.io/en/latest/index.html][Cask]] and you can use the ~cask link~ command to link your
-local clone (or download) of oje to Emacs:
+If you are familiar with Emacs tool [[http://cask.readthedocs.io/en/latest/index.html][Cask]], you can use the ~cask link~ command to
+link your local clone (or download) of oje to Emacs:
 #+BEGIN_SRC Shell-script
 $> cask link oje /path/to/oje
 #+END_SRC
@@ -58,14 +58,55 @@ The exported journal entries are ready for consumption by Nikola.
 
 Currently I use the following snippet to export my org-ournal:
 #+BEGIN_SRC Emacs-Lisp
+;; This snippet shows how to use oje to export all org-journal entries in your
+;; org-journal-dir directory. It assumes package oje has been loaded.
+
 (require 'f)
 (require 'oje)
 
 (let ((dest-dir "/home/pieter/repos/github.com/nikola-journal/posts")
       (journal-files
        (f-files org-journal-dir (lambda (file) (equal (f-ext file) "org")))))
-  (mapc (lambda (journal-file) (export-journal-entries journal-file dest-dir))
+  (mapc (lambda (journal-file) (oje-export-journal-file journal-file dest-dir))
         journal-files))
 #+END_SRC
 
 * Development
+
+oje is developed using [[http://cask.readthedocs.io/en/latest/index.html][Cask]], "a project management tool for Emacs Lisp to
+automate the package development cycle". For information about the installation
+Cask I refer to its website. In this README I only show how to use Cask for the
+development of oje.
+
+In the directory of your clone of oje, execute the following command to download
+its development dependencies:
+#+BEGIN_SRC Shell-script
+$> cask init --dev
+#+END_SRC
+This command downloads the development dependencies to subdirectory =.cask/=.
+
+There is a Makefile in the root of the repo that offers several rules as
+shortcuts to these Cask commands. For example, the command to download the
+development dependencies is also available as rule =init= of the Makefile:
+#+BEGIN_SRC Shell-script
+$> make init
+#+END_SRC
+
+oje comes with some unit tests, which you can find in subdirectory =test/=. To
+run them, execute the following command:
+#+BEGIN_SRC Shell-script
+$> cask exec ert-runner
+#+END_SRC
+This command is accessible as rule =unit-test= of the Makefile. This rule is
+the default rule, so just calling =make= runs the unit tests.
+
+Cask is also used to generate file oje-pkg.el from the main oje file oje.el. To
+do so, execute
+#+BEGIN_SRC Shell-script
+$> cask pkg-file
+#+END_SRC
+You will have to do this if you upgrade the oje version number.
+
+I have installed oje using the "cask link" method mentioned in section
+"Introduction". This setup also allows me to run integration tests on my own
+personal org-journal.
