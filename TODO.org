@@ -1,10 +1,10 @@
-- [ ] update function names for new module name "oje" - have a look at the [[https://github.com/bbatsov/emacs-lisp-style-guide][Emacs style guide]]
-- [ ] document functions
 - [ ] add proper automated integration tests - use Ecukes?
 - [ ] add a LICENSE
 - [ ] add a proper versioning scheme
 
 * Done
+- [X] update function names for new module name "oje" - have a look at the [[https://github.com/bbatsov/emacs-lisp-style-guide][Emacs style guide]]
+- [X] document functions
 - [X] remove duplication of org-journal entry title in export
 - [X] add a README
 - [X] create an installable Emacs package
