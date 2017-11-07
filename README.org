@@ -40,8 +40,8 @@ $> git clone https://github.com/swinkels/oje.git
 #+END_SRC
 and load the file from there.
 
-If you are familiar with [[http://cask.readthedocs.io/en/latest/index.html][Cask]], a tool that facilitates the development of Emacs
-packages, you can use its ~cask link~ command to link your local clone (or
+If you use the tool [[http://cask.readthedocs.io/en/latest/index.html][Cask]] to manage package dependencies for your local Emacs
+configuration, you can use its ~cask link~ command to link your local clone (or
 download) of oje to Emacs:
 #+BEGIN_SRC Shell-script
 $> cask link oje /path/to/oje-dir
