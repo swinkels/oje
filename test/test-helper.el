@@ -10,7 +10,7 @@
 (defvar root-code-path
   (f-parent root-test-path))
 
-(require 'export-org-journal-file
-         (f-expand "export-org-journal-file.el" root-code-path))
+(require 'oje
+         (f-expand "oje.el" root-code-path))
 
 ;;; test-helper.el ends here
